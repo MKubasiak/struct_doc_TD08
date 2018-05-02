@@ -3,7 +3,18 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
+import java.util.*;
+
 import static com.mongodb.client.model.Filters.eq;
+
+/**
+ * Classe Data
+ *
+ * Méthodes de récupération de données (titres ou albums)
+ * Méthodes d'ajout ou de suppression
+ *
+ * @authors : Charlotte Fernandes & Maxime Kubasiak
+ */
 
 public class Data {
 
@@ -12,7 +23,7 @@ public class Data {
     public final static String DB = "musicdb";
 
     private String key = "6c1897c3409c621a1522760e7164fbf6";
-    private String url ="http://ws.audioscrobbler.com/";
+    private String url ="http://ws.audioscrobbler.com/2.0/?";
     private Document doc = new Document();
 
     /**
@@ -23,18 +34,28 @@ public class Data {
      */
     public Document getDataAlbum(String artiste, String album){
         HTTPTools httpTools = new HTTPTools();
-        String jsonAlbum = httpTools.sendGet(url+"2.0/?method=album.getinfo&api_key="+key+"&artist="+artiste+"&album="+album+"&format=json");
-        Document docAlbum = doc.parse(jsonAlbum);
-        Document document = docAlbum.get("album", docAlbum);
-        Document finalDoc = new Document("name", document.get("name"))
-                .append("artist", document.get("artist"))
-                .append("mbid", document.get("mbid"))
-                .append("url", document.get("url"))
-                .append("release", "")
-                .append("images", document.get("image"))
-                .append("listeners", document.get("listeners"))
-                .append("playcounts", document.get("playcount"))
-                .append("tracks", document.get("tracks"));
+        String jsonAlbum = httpTools.sendGet(url+"method=album.getinfo&api_key="+key+"&artist="+artiste+"&album="+album+"&format=json");
+        Document document = doc.parse(jsonAlbum);
+        Document docAlbum = document.get("album", document);
+
+        //Récupération des tracks
+        ArrayList<Document> listTracks = (ArrayList)docAlbum.get("tracks", document).get("track");
+        ArrayList<Document> listTrack = new ArrayList<>();
+        for(int i = 0; i<listTracks.size(); i++){
+            listTrack.add(new Document("name", listTracks.get(i).get("name")).append("rank", listTracks.get(i).get("@attr", document).get("rank")).append("mbid", "null"));
+        }
+
+        //Construction du document
+        Document finalDoc = new Document("name", docAlbum.get("name"))
+                .append("artist", docAlbum.get("artist"))
+                .append("mbid", docAlbum.get("mbid"))
+                .append("url", docAlbum.get("url"))
+                .append("release", "null")
+                .append("images", docAlbum.get("image"))
+                .append("listeners", docAlbum.get("listeners"))
+                .append("playcounts", docAlbum.get("playcount"))
+                .append("tracks", listTrack);
+
         return finalDoc;
     }
 
@@ -46,15 +67,25 @@ public class Data {
      */
     public Document getDataTitle(String artiste, String title){
         HTTPTools http = new HTTPTools();
-        String jsonTrack = http.sendGet(url+"2.0/?method=track.getInfo&api_key="+key+"&artist="+artiste+"&track="+title+"&format=json");
-        Document docTrack = doc.parse(jsonTrack);
-        Document document = docTrack.get("track", docTrack);
-        Document finalDoc = new Document("name", document.get("name"))
-                .append("mbid", document.get("mbid"))
-                .append("url", document.get("url"))
-                .append("duration", document.get("duration"))
-                .append("artist", document.get("artist"))
-                .append("tags", document.get("toptags"));
+        String jsonTrack = http.sendGet(url+"method=track.getInfo&api_key="+key+"&artist="+artiste+"&track="+title+"&format=json");
+        Document document = doc.parse(jsonTrack);
+        Document docTrack = document.get("track", document);
+        Document docArtist = docTrack.get("artist", document);
+
+        //Récupération des noms des tags
+        ArrayList<Document> listTags = (ArrayList)docTrack.get("toptags", document).get("tag");
+        ArrayList<String> arrayName = new ArrayList();
+        for(Document tagname : listTags){
+            arrayName.add(tagname.getString("name"));
+        }
+
+        //Construction du document
+        Document finalDoc = new Document("name", docTrack.get("name"))
+                .append("mbid", docTrack.get("mbid"))
+                .append("url", docTrack.get("url"))
+                .append("duration", docTrack.get("duration"))
+                .append("artist", new Document("name", docArtist.get("name")).append("mbid", docArtist.get("mbid")))
+                .append("tags", arrayName);
         return finalDoc;
     }
 
@@ -85,11 +116,7 @@ public class Data {
      */
     public void deleteDocument(String mbid, String colName){
         MongoCollection collection = this.database.getCollection(colName);
-        if(colName == "albums"){
-            collection.deleteMany(eq("album.mbid", mbid));
-        }else{
-            collection.deleteMany(eq("track.mbid", mbid));
-        }
+        collection.deleteMany(eq("mbid", mbid));
     }
 
 }

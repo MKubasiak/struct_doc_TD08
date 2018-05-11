@@ -1,6 +1,15 @@
-struct_doc_TD08
+TD 8 - Java, jsoN, Last.fm et MongoDB
+---
 
-Application name	Last
-API key	            6c1897c3409c621a1522760e7164fbf6
-Shared secret	    874085290a702f7d6a90ba95cb41e529
-Registered to	    fernand56u
+**Auteurs :** Charlotte Fernandes et Maxime Kubasiak
+
+
+L'objectif de l'application est de pouvoir **récupérer les informations d'un album ou d'un titre (track)
+au format JSON**, via l'API Web du site https://www.last.fm 
+et de les **ajouter ou de les supprimer d'une base de données MongoDB**.
+
+
+Le répertoire **ressources** contient les fichiers :
+- albums.json
+- tracks.json
+Il contiennent l'export de notre base de données, soit **10 tracks et 8 albums**.

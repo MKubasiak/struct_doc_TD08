@@ -21,38 +21,56 @@ public class Main {
      * Méthode pour remplir la bdd
      */
     public static void fillDb(){
-        //docAlbum = data.getDataAlbum("Lorde", "Melodrama");
-        //docAlbum = data.getDataAlbum("Ed%20Sheeran", "Divide");
-        //docAlbum = data.getDataAlbum("Beyoncé", "Beyoncé");
-        //docAlbum = data.getDataAlbum("Drake", "So%20Far%20Gone");
-        //docAlbum = data.getDataAlbum("The%20Beatles", "Abbey%20Road");
-        //docAlbum = data.getDataAlbum("Queen", "Greatest%20Hits");
-        //docAlbum = data.getDataAlbum("Elvis%20Presley", "Elvis%20Presley");
-        //docAlbum = data.getDataAlbum("Cher", "Believe");
-        //data.insertDocument(docAlbum, COLALBUMS);
+        addAlbum("Lorde", "Melodrama");
+        addAlbum("Ed%20Sheeran", "Divide");
+        addAlbum("Beyoncé", "Beyoncé");
+        addAlbum("Drake", "So%20Far%20Gone");
+        addAlbum("The%20Beatles", "Abbey%20Road");
+        addAlbum("Queen", "Greatest%20Hits");
+        addAlbum("Elvis%20Presley", "Elvis%20Presley");
+        addAlbum("Cher", "Believe");
+
+        /*
+         * Exemple de suppression d'album
+         */
         //data.deleteDocument("63b3a8ca-26f2-4e2b-b867-647a6ec2bebd",COLALBUMS);
 
-        //docTrack = data.getDataTitle("Cher", "Believe");
-        //docTrack = data.getDataTitle("Bob%20Dylan", "You%27re%20Gonna%20Make%20Me%20Lonesome%20When%20You%20Go");
-        //docTrack = data.getDataTitle("The%20Beatles", "Blackbird");
-        //docTrack = data.getDataTitle("The%20Beatles", "Let%20It%20Be");
-        //docTrack = data.getDataTitle("The%20Beatles", "Hey%20Jude");
-        //docTrack = data.getDataTitle("Queen", "Bohemian%20Rhapsody");
-        //docTrack = data.getDataTitle("Queen", "Somebody%20To%20Love");
-        //docTrack = data.getDataTitle("Elvis%20Presley", "Can%27t%20Help%20Falling%20In%20Love");
-        //docTrack = data.getDataTitle("Jimi%20Hendrix", "Purple%20Haze");
-        //docTrack = data.getDataTitle("Pink%20Foyld", "Wish%20You%20Were%20Here");
+        addTrack("Cher", "Believe");
+        addTrack("Bob%20Dylan", "You%27re%20Gonna%20Make%20Me%20Lonesome%20When%20You%20Go");
+        addTrack("The%20Beatles", "Blackbird");
+        addTrack("The%20Beatles", "Let%20It%20Be");
+        addTrack("The%20Beatles", "Hey%20Jude");
+        addTrack("Queen", "Bohemian%20Rhapsody");
+        addTrack("Queen", "Somebody%20To%20Love");
+        addTrack("Elvis%20Presley", "Can%27t%20Help%20Falling%20In%20Love");
+        addTrack("Jimi%20Hendrix", "Purple%20Haze");
+        addTrack("Pink%20Foyld", "Wish%20You%20Were%20Here");
 
-        //data.insertDocument(docTrack, COLTRACKS);
+        /*
+         * Exemple de suppression de track
+         */
         //data.deleteDocument("32ca187e-ee25-4f18-b7d0-3b6713f24635",COLTRACKS);
     }
 
+    public static void addAlbum(String artist, String album){
+        docAlbum = data.getDataAlbum(artist,album);
+        data.insertDocument(docAlbum, COLALBUMS);
+    }
+
+    public static void addTrack(String artist, String title){
+        docTrack = data.getDataTitle("Cher", "Believe");
+        data.insertDocument(docTrack, COLTRACKS);
+    }
     /**
      * Méthode main
      * @param args
      */
     public static void main(String[] args) {
         data.connectDB();
-        fillDb();
+        //Si vous souhaitez remplir votre base de données, passez en argument du main 'fill'
+        //Sinon passez l'argument 'noFill'
+       if(args[0].equals("fill")){
+            fillDb();
+       }
     }
 }

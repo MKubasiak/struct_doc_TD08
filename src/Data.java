@@ -22,8 +22,8 @@ public class Data {
     public MongoDatabase database;
     public final static String DB = "musicdb";
 
-    private String key = "6c1897c3409c621a1522760e7164fbf6";
-    private String url ="http://ws.audioscrobbler.com/2.0/?";
+    private final String KEY = "6c1897c3409c621a1522760e7164fbf6";
+    private final String URL ="http://ws.audioscrobbler.com/2.0/?";
     private Document doc = new Document();
 
     /**
@@ -34,7 +34,7 @@ public class Data {
      */
     public Document getDataAlbum(String artiste, String album){
         HTTPTools httpTools = new HTTPTools();
-        String jsonAlbum = httpTools.sendGet(url+"method=album.getinfo&api_key="+key+"&artist="+artiste+"&album="+album+"&format=json");
+        String jsonAlbum = httpTools.sendGet(URL+"method=album.getinfo&api_key="+KEY+"&artist="+artiste+"&album="+album+"&format=json");
         Document document = doc.parse(jsonAlbum);
         Document docAlbum = document.get("album", document);
 
@@ -67,7 +67,7 @@ public class Data {
      */
     public Document getDataTitle(String artiste, String title){
         HTTPTools http = new HTTPTools();
-        String jsonTrack = http.sendGet(url+"method=track.getInfo&api_key="+key+"&artist="+artiste+"&track="+title+"&format=json");
+        String jsonTrack = http.sendGet(URL+"method=track.getInfo&api_key="+KEY+"&artist="+artiste+"&track="+title+"&format=json");
         Document document = doc.parse(jsonTrack);
         Document docTrack = document.get("track", document);
         Document docArtist = docTrack.get("artist", document);

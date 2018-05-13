@@ -8,9 +8,14 @@ au format JSON**, via l'API Web du site https://www.last.fm
 et de les **ajouter** ou de les **supprimer** d'une base de données **MongoDB**.
 
 ###Lancement
-A l'execution du main, vous avez un argument à saisir :
-* **fill**, remplira votre base de données avec nos données
-* **noFill**, le programme s'executera sans remplir votre base de données
+A l'execution du main, un menu vous proposera plusieurs options :
+- Remplir votre BDD avec nos données
+- Afficher les informations d'un album
+- Ajouter un album à votre BDD
+- Supprimer un album de votre BDD
+- Afficher les informations d'un titre
+- Ajouter un titre à votre BDD
+- Supprimer un titre de votre BDD
 
 Le répertoire **ressources** contient les fichiers :
 - albums.json
